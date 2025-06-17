@@ -18,6 +18,7 @@ This document outlines the coding standards, architectural patterns, and best pr
 - **axios-mock-adapter** for Mocking an API request
 - **Storybook v8** for a UI Component test framework
 - Test script
+
 ```shell
 pnpm test
 ```
