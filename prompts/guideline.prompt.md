@@ -42,12 +42,16 @@ Ignore the `*.prompt.md` resources defined in `prompts/prompt.ignore`.
 root/
 ├─ apps/
 │  └─ web/
-│     ├─ app                # Page components & Layout components
-│     └─ components
+│     ├─ app                   # Page components & Layout components
+│     ├─ components            # Business logic components
+│     ├─ hooks
+│     └─ lib                   # Utils  
+│         ├─ api.ts            # Axios
+│         └─ axiosInstances.ts
 └─ packages/
    └─ ui/
       └─ src/
-         └─ components/     # UI Common components (shadcn/ui)
+         └─ components/        # UI Common components (shadcn/ui) and None business components
 ```
 
 ## Common Rules
