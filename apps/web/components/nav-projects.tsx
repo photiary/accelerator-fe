@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Folder,
-  MoreHorizontal,
-  type LucideIcon,
-} from "lucide-react";
+import { Folder, MoreHorizontal, type LucideIcon } from "lucide-react";
 
 import {
   DropdownMenu,

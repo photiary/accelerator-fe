@@ -45,7 +45,7 @@ root/
 │     ├─ app                   # Page components & Layout components
 │     ├─ components            # Business logic components
 │     ├─ hooks
-│     └─ lib                   # Utils  
+│     └─ lib                   # Utils
 │         ├─ api.ts            # Axios
 │         └─ axiosInstances.ts
 └─ packages/
