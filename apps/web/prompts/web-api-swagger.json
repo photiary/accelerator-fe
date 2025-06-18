@@ -1,0 +1,77 @@
+{
+  "openapi": "3.1.0",
+  "servers": [
+    { "url": "http://localhost:8080", "description": "Generated server url" }
+  ],
+  "tags": [{ "name": "Folder", "description": "Folder management API" }],
+  "paths": {
+    "/api/folders/{id}": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Get a folder by ID",
+        "description": "Retrieves a folder by its ID",
+        "operationId": "getFolderById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the folder to retrieve",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the folder",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Folder not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FeatureSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" }
+        }
+      },
+      "FolderResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "parentId": { "type": "integer", "format": "int64" },
+          "parentName": { "type": "string" },
+          "childFolders": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FolderSummaryDto" }
+          },
+          "features": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FeatureSummaryDto" }
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "createdId": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "updatedId": { "type": "string" }
+        }
+      },
+      "FolderSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" }
+        }
+      }
+    }
+  }
+}

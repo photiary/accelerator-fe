@@ -13,20 +13,7 @@ This document outlines the coding standards, architectural patterns, and best pr
 - **dayjs** for Date util
 - **shadcn/ui** is a set of beautifully-designed, accessible components and a code distribution platform.
 
-### Testing
-
-- **axios-mock-adapter** for Mocking an API request
-- **Storybook v8** for a UI Component test framework
-- Test script
-
-```shell
-pnpm test
-```
-
 ### Excluded Technologies
-
-- **DO NOT use Jest**: use vitest instead
-- **DO NOT use `Date()`**: use dayjs instead
 
 ### Excluded Prompt
 
