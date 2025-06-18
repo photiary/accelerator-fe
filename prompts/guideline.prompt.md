@@ -30,7 +30,7 @@ pnpm test
 
 ### Excluded Prompt
 
-Ignore the `*.prompt.md` resources defined in `prompts/prompt.ignore`.
+Ignore the `*.prompt.md` resources defined in `./prompt.ignore`.
 
 ## Architectural Patterns
 
@@ -43,7 +43,8 @@ root/
 ├─ apps/
 │  └─ web/
 │     ├─ app                   # Page components & Layout components
-│     ├─ components            # Business logic components
+│     │  └─ {domain}           # Feature domain (Feature Page, Feature API Call)
+│     ├─ components            # Business logic common components
 │     ├─ hooks
 │     └─ lib                   # Utils
 │         ├─ api.ts            # Axios
@@ -53,6 +54,18 @@ root/
       └─ src/
          └─ components/        # UI Common components (shadcn/ui) and None business components
 ```
+
+### Layered Architecture
+
+The application follows a strict layered architecture with a clear flow of control
+
+- **API call Layer**: Backend Http request API call, use the Axios defined in `../apps/web/lib/api.ts`
+- **UI Component Layer**: Contains the visual components presented to users, including buttons, forms, and layouts.
+
+The flow of control should always follow the pattern:
+
+1. This file: `./prompts/guideline.prompt.md`
+2. API call Layer: `./prompts/api.prompt.md`
 
 ## Common Rules
 
