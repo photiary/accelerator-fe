@@ -62,7 +62,7 @@ const data = {
           url: "#",
         },
       ],
-    }
+    },
   ],
   projects: [
     {
