@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@workspace/ui/components/button";
-// import { foldersApi } from "@/app/folders/foldersAPI";
+import { folderApi } from "@/app/folder/folderAPI";
 
 export default function Page() {
   const getFolderById = async (id: number) => {
-    // await foldersApi.getFolderById(id);
+    await folderApi.getFolderById(id);
   };
 
   return (
