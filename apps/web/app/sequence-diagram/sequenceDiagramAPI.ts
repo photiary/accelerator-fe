@@ -55,7 +55,10 @@ export const sequenceDiagramApi = {
    * @param data 업데이트할 시퀀스 다이어그램 데이터
    * @returns SequenceDiagramResponseDto
    */
-  updateSequenceDiagram: async (id: number, data: SequenceDiagramRequestDto) => {
+  updateSequenceDiagram: async (
+    id: number,
+    data: SequenceDiagramRequestDto,
+  ) => {
     const response = await publicApi.put(`/api/sequence-diagrams/${id}`, data);
     return response.data as SequenceDiagramResponseDto;
   },

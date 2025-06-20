@@ -18,6 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar";
+import { useRouter } from "next/navigation";
 
 export function NavProjects({
   projects,
@@ -29,6 +30,11 @@ export function NavProjects({
   }[];
 }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
+
+  const goPage = (url: string) => {
+    router.push(url);
+  };
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -53,11 +59,19 @@ export function NavProjects({
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
               >
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    router.push("/template-prompt/info");
+                  }}
+                >
                   <Folder className="text-muted-foreground" />
                   <span>New Prompt</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    router.push("/template-prompt/list");
+                  }}
+                >
                   <Folder className="text-muted-foreground" />
                   <span>Prompt List</span>
                 </DropdownMenuItem>

@@ -129,7 +129,10 @@ export const folderApi = {
    * @returns FeatureResponseDto
    */
   addFeatureToFolder: async (folderId: number, data: FeatureRequestDto) => {
-    const response = await publicApi.post(`/api/folders/${folderId}/features`, data);
+    const response = await publicApi.post(
+      `/api/folders/${folderId}/features`,
+      data,
+    );
     return response.data as FeatureResponseDto;
   },
 
@@ -141,7 +144,9 @@ export const folderApi = {
    * @returns FeatureResponseDto
    */
   moveFeatureToFolder: async (folderId: number, featureId: number) => {
-    const response = await publicApi.put(`/api/folders/${folderId}/features/${featureId}`);
+    const response = await publicApi.put(
+      `/api/folders/${folderId}/features/${featureId}`,
+    );
     return response.data as FeatureResponseDto;
   },
 };
