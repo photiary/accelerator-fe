@@ -1,10 +1,262 @@
 {
   "openapi": "3.1.0",
+  "info": {
+    "title": "Accelerator Back API",
+    "description": "API documentation for Accelerator Back application",
+    "contact": {
+      "name": "Funa",
+      "url": "https://funa.com",
+      "email": "contact@funa.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "v1.0.0"
+  },
   "servers": [
     { "url": "http://localhost:8080", "description": "Generated server url" }
   ],
-  "tags": [{ "name": "Folder", "description": "Folder management API" }],
+  "tags": [
+    { "name": "Demo", "description": "Demo API for logging demonstration" },
+    {
+      "name": "Sequence Diagram",
+      "description": "Sequence Diagram management API"
+    },
+    { "name": "Folder", "description": "Folder management API" },
+    { "name": "SQL Query", "description": "SQL Query management API" },
+    { "name": "Feature", "description": "Feature management API" },
+    {
+      "name": "Template Prompt",
+      "description": "Template Prompt management API"
+    }
+  ],
   "paths": {
+    "/api/template-prompts/{id}": {
+      "get": {
+        "tags": ["Template Prompt"],
+        "summary": "Get a template prompt by ID",
+        "description": "Retrieves a template prompt by its ID",
+        "operationId": "getTemplatePromptById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the template prompt to retrieve",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the template prompt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplatePromptResponseDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Template prompt not found" }
+        }
+      },
+      "put": {
+        "tags": ["Template Prompt"],
+        "operationId": "updateTemplatePrompt",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplatePromptRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplatePromptResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Template Prompt"],
+        "operationId": "deleteTemplatePrompt",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/sql-queries/{id}": {
+      "get": {
+        "tags": ["SQL Query"],
+        "summary": "Get a SQL query by ID",
+        "description": "Retrieves a SQL query by its ID",
+        "operationId": "getSqlQueryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the SQL query to retrieve",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the SQL query",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SqlQueryResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "SQL query not found" }
+        }
+      },
+      "put": {
+        "tags": ["SQL Query"],
+        "operationId": "updateSqlQuery",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SqlQueryRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SqlQueryResponseDto" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["SQL Query"],
+        "operationId": "deleteSqlQuery",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/sequence-diagrams/{id}": {
+      "get": {
+        "tags": ["Sequence Diagram"],
+        "summary": "Get a sequence diagram by ID",
+        "description": "Retrieves a sequence diagram by its ID",
+        "operationId": "getSequenceDiagramById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the sequence diagram to retrieve",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the sequence diagram",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SequenceDiagramResponseDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Sequence diagram not found" }
+        }
+      },
+      "put": {
+        "tags": ["Sequence Diagram"],
+        "operationId": "updateSequenceDiagram",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SequenceDiagramRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SequenceDiagramResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Sequence Diagram"],
+        "operationId": "deleteSequenceDiagram",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
     "/api/folders/{id}": {
       "get": {
         "tags": ["Folder"],
@@ -31,11 +283,765 @@
           },
           "404": { "description": "Folder not found" }
         }
+      },
+      "put": {
+        "tags": ["Folder"],
+        "summary": "Update a folder",
+        "description": "Updates an existing folder with the provided data",
+        "operationId": "updateFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the folder to update",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FolderRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Folder successfully updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Folder not found" },
+          "400": { "description": "Invalid input data" }
+        }
+      },
+      "delete": {
+        "tags": ["Folder"],
+        "summary": "Delete a folder",
+        "description": "Deletes a folder by its ID",
+        "operationId": "deleteFolder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the folder to delete",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Folder successfully deleted" },
+          "404": { "description": "Folder not found" }
+        }
+      }
+    },
+    "/api/folders/{folderId}/features/{featureId}": {
+      "put": {
+        "tags": ["Folder"],
+        "summary": "Move a feature to a different folder",
+        "description": "Moves an existing feature to the specified folder",
+        "operationId": "moveFeatureToFolder",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "path",
+            "description": "ID of the folder to move the feature to",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "featureId",
+            "in": "path",
+            "description": "ID of the feature to move",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feature successfully moved to folder",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Folder or feature not found" }
+        }
+      }
+    },
+    "/api/features/{id}": {
+      "get": {
+        "tags": ["Feature"],
+        "summary": "Get a feature by ID",
+        "description": "Retrieves a feature by its ID",
+        "operationId": "getFeatureById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feature to retrieve",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the feature",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Feature not found" }
+        }
+      },
+      "put": {
+        "tags": ["Feature"],
+        "summary": "Update a feature",
+        "description": "Updates an existing feature with the provided data",
+        "operationId": "updateFeature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feature to update",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeatureRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Feature successfully updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Feature not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Feature"],
+        "summary": "Delete a feature",
+        "description": "Deletes a feature by its ID",
+        "operationId": "deleteFeature",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the feature to delete",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Feature successfully deleted" },
+          "404": { "description": "Feature not found" }
+        }
+      }
+    },
+    "/api/template-prompts": {
+      "get": {
+        "tags": ["Template Prompt"],
+        "summary": "Get all template prompts",
+        "description": "Retrieves a list of all template prompts",
+        "operationId": "getAllTemplatePrompts",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved template prompts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplatePromptResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Template Prompt"],
+        "summary": "Create a new template prompt",
+        "description": "Creates a new template prompt with the provided data",
+        "operationId": "createTemplatePrompt",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplatePromptRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Template prompt successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplatePromptResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" }
+        }
+      }
+    },
+    "/api/sql-queries": {
+      "get": {
+        "tags": ["SQL Query"],
+        "summary": "Get all SQL queries",
+        "description": "Retrieves a list of all SQL queries",
+        "operationId": "getAllSqlQueries",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved SQL queries",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SqlQueryResponseDto" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["SQL Query"],
+        "summary": "Create a new SQL query",
+        "description": "Creates a new SQL query with the provided data",
+        "operationId": "createSqlQuery",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SqlQueryRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "SQL query successfully created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SqlQueryResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" }
+        }
+      }
+    },
+    "/api/sequence-diagrams": {
+      "get": {
+        "tags": ["Sequence Diagram"],
+        "summary": "Get all sequence diagrams",
+        "description": "Retrieves a list of all sequence diagrams",
+        "operationId": "getAllSequenceDiagrams",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved sequence diagrams",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SequenceDiagramResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Sequence Diagram"],
+        "summary": "Create a new sequence diagram",
+        "description": "Creates a new sequence diagram with the provided data",
+        "operationId": "createSequenceDiagram",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SequenceDiagramRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Sequence diagram successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SequenceDiagramResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" }
+        }
+      }
+    },
+    "/api/folders": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Get all folders",
+        "description": "Retrieves a list of all folders",
+        "operationId": "getAllFolders",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved folders",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Folder"],
+        "summary": "Create a new folder",
+        "description": "Creates a new folder with the provided data",
+        "operationId": "createFolder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FolderRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Folder successfully created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" }
+        }
+      }
+    },
+    "/api/folders/{folderId}/features": {
+      "post": {
+        "tags": ["Folder"],
+        "summary": "Add a feature to a folder",
+        "description": "Creates a new feature and adds it to the specified folder",
+        "operationId": "addFeatureToFolder",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "path",
+            "description": "ID of the folder to add the feature to",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeatureRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Feature successfully added to folder",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Folder not found" }
+        }
+      }
+    },
+    "/api/features": {
+      "get": {
+        "tags": ["Feature"],
+        "summary": "Get all features",
+        "description": "Retrieves a list of all features",
+        "operationId": "getAllFeatures",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved features",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Feature"],
+        "summary": "Create a new feature",
+        "description": "Creates a new feature with the provided data",
+        "operationId": "createFeature",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeatureRequestDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Feature successfully created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" }
+        }
+      }
+    },
+    "/api/template-prompts/search": {
+      "get": {
+        "tags": ["Template Prompt"],
+        "operationId": "findTemplatePromptsByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemplatePromptResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sql-queries/search": {
+      "get": {
+        "tags": ["SQL Query"],
+        "operationId": "findSqlQueriesByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SqlQueryResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sequence-diagrams/search": {
+      "get": {
+        "tags": ["Sequence Diagram"],
+        "operationId": "findSequenceDiagramsByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SequenceDiagramResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/folders/{parentId}/children": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Find child folders",
+        "description": "Retrieves a list of child folders for the specified parent folder",
+        "operationId": "findChildFolders",
+        "parameters": [
+          {
+            "name": "parentId",
+            "in": "path",
+            "description": "ID of the parent folder",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved child folders",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Parent folder not found" }
+        }
+      }
+    },
+    "/api/folders/search": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Find folders by name",
+        "description": "Retrieves a list of folders matching the provided name",
+        "operationId": "findFoldersByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to search for",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved folders",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/folders/root": {
+      "get": {
+        "tags": ["Folder"],
+        "summary": "Get all root folders",
+        "description": "Retrieves a list of all root folders (folders with no parent)",
+        "operationId": "getRootFolders",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved root folders",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FolderResponseDto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/features/search": {
+      "get": {
+        "tags": ["Feature"],
+        "summary": "Find features by name",
+        "description": "Retrieves a list of features matching the provided name",
+        "operationId": "findFeaturesByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name to search for",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved features",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/features/folder/{folderId}": {
+      "get": {
+        "tags": ["Feature"],
+        "summary": "Find features by folder",
+        "description": "Retrieves a list of features in the specified folder",
+        "operationId": "findFeaturesByFolder",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "path",
+            "description": "ID of the folder to search in",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved features",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeatureResponseDto" }
+              }
+            }
+          },
+          "404": { "description": "Folder not found" }
+        }
+      }
+    },
+    "/api/demo/hello": {
+      "get": {
+        "tags": ["Demo"],
+        "summary": "Hello endpoint",
+        "description": "Simple endpoint to demonstrate logging",
+        "operationId": "hello",
+        "parameters": [
+          {
+            "name": "message",
+            "in": "query",
+            "description": "Optional message parameter",
+            "required": false,
+            "schema": { "type": "string", "default": "Hello, World!" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully processed request",
+            "content": { "application/json": {} }
+          }
+        }
+      }
+    },
+    "/api/demo/error": {
+      "get": {
+        "tags": ["Demo"],
+        "summary": "Error endpoint",
+        "description": "Endpoint to demonstrate error logging",
+        "operationId": "error",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": { "application/json": {} }
+          }
+        }
       }
     }
   },
   "components": {
     "schemas": {
+      "TemplatePromptRequestDto": {
+        "type": "object",
+        "description": "Template prompt data to create",
+        "properties": {
+          "name": { "type": "string" },
+          "promptContent": { "type": "string" }
+        }
+      },
+      "TemplatePromptResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "promptContent": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "createdId": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "updatedId": { "type": "string" }
+        }
+      },
+      "SqlQueryRequestDto": {
+        "type": "object",
+        "description": "SQL query data to create",
+        "properties": {
+          "name": { "type": "string" },
+          "queryContent": { "type": "string" }
+        }
+      },
+      "SqlQueryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "queryContent": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "createdId": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "updatedId": { "type": "string" }
+        }
+      },
+      "SequenceDiagramRequestDto": {
+        "type": "object",
+        "description": "Sequence diagram data to create",
+        "properties": {
+          "name": { "type": "string" },
+          "sequenceDiagramContent": { "type": "string" }
+        }
+      },
+      "SequenceDiagramResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "sequenceDiagramContent": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "createdId": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "updatedId": { "type": "string" }
+        }
+      },
+      "FolderRequestDto": {
+        "type": "object",
+        "description": "Folder data to create",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "parentId": { "type": "integer", "format": "int64" }
+        }
+      },
       "FeatureSummaryDto": {
         "type": "object",
         "properties": {
@@ -70,6 +1076,42 @@
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "name": { "type": "string" }
+        }
+      },
+      "FeatureResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "folderId": { "type": "integer", "format": "int64" },
+          "folderName": { "type": "string" },
+          "templatePromptId": { "type": "integer", "format": "int64" },
+          "templatePromptName": { "type": "string" },
+          "sequenceDiagramId": { "type": "integer", "format": "int64" },
+          "sequenceDiagramName": { "type": "string" },
+          "sqlQueryId": { "type": "integer", "format": "int64" },
+          "sqlQueryName": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "createdId": { "type": "string" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "updatedId": { "type": "string" }
+        }
+      },
+      "FeatureRequestDto": {
+        "type": "object",
+        "description": "Feature data to create",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "folderId": { "type": "integer", "format": "int64" },
+          "templatePromptId": { "type": "integer", "format": "int64" },
+          "sequenceDiagramName": { "type": "string" },
+          "sequenceDiagramContent": { "type": "string" },
+          "sqlQueryName": { "type": "string" },
+          "sqlQueryContent": { "type": "string" },
+          "sequenceDiagramId": { "type": "integer", "format": "int64" },
+          "sqlQueryId": { "type": "integer", "format": "int64" }
         }
       }
     }
