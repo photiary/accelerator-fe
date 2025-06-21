@@ -55,6 +55,11 @@ interface FolderTreeItem extends FolderResponseDto {
   isOpen?: boolean;
 }
 
+// Track open state of folders
+interface OpenFolderState {
+  [key: string]: boolean;
+}
+
 export function NavTree() {
   const [folders, setFolders] = useState<FolderTreeItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +71,7 @@ export function NavTree() {
   );
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderDescription, setNewFolderDescription] = useState("");
+  const [openFolders, setOpenFolders] = useState<OpenFolderState>({});
 
   const { isMobile } = useSidebar();
   const router = useRouter();
@@ -218,6 +224,13 @@ export function NavTree() {
         key={folder.id}
         asChild
         defaultOpen={folder.isOpen}
+        open={openFolders[folder.id]}
+        onOpenChange={(open) => {
+          setOpenFolders((prev) => ({
+            ...prev,
+            [folder.id]: open,
+          }));
+        }}
         className="group/collapsible"
       >
         <SidebarMenuItem>
@@ -226,7 +239,9 @@ export function NavTree() {
               <Folder />
               <span>{folder.name}</span>
               {folder.children && (
-                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                <ChevronRight
+                  className={`ml-auto transition-transform duration-200 ${openFolders[folder.id] ? "rotate-90" : ""}`}
+                />
               )}
             </SidebarMenuButton>
           </CollapsibleTrigger>
