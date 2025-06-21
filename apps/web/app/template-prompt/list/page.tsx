@@ -1,3 +1,5 @@
+"use client";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -13,8 +15,45 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@workspace/ui/components/table";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  templatePromptApi,
+  TemplatePromptResponseDto,
+} from "../templatePromptAPI";
 
 export default function Page() {
+  const router = useRouter();
+  const [prompts, setPrompts] = useState<TemplatePromptResponseDto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPrompts = async () => {
+      try {
+        const data = await templatePromptApi.getAllTemplatePrompts();
+        setPrompts(data);
+      } catch (error) {
+        console.error("Failed to fetch prompts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrompts();
+  }, []);
+
+  const handleRowClick = (id: number) => {
+    router.push(`/template-prompt/info?id=${id}`);
+  };
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -33,14 +72,49 @@ export default function Page() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>List</BreadcrumbPage>
+                  <BreadcrumbPage>Prompt List</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl p-4 md:min-h-min">
+            {loading ? (
+              <div className="flex items-center justify-center h-40">
+                <p>Loading...</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-20">No</TableHead>
+                    <TableHead>Name</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {prompts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center">
+                        No prompts found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    prompts.map((prompt, index) => (
+                      <TableRow
+                        key={prompt.id}
+                        onClick={() => handleRowClick(prompt.id)}
+                        className="cursor-pointer hover:bg-muted"
+                      >
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{prompt.name}</TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
