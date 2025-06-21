@@ -13,13 +13,13 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Separator } from "@workspace/ui/components/separator";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@workspace/ui/components/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@workspace/ui/components/dialog";
 import {
   SidebarInset,
   SidebarProvider,
@@ -253,22 +253,22 @@ export default function Page() {
       </SidebarInset>
 
       {/* Delete Confirmation Dialog */}
-      <Sheet open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Confirm Deletion</SheetTitle>
-            <SheetDescription>
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
               Are you sure you want to delete this prompt? This action cannot be
               undone.
-            </SheetDescription>
-          </SheetHeader>
+            </DialogDescription>
+          </DialogHeader>
           <div className="py-6">
             <p className="text-sm text-muted-foreground">
               Prompt:{" "}
               <span className="font-medium text-foreground">{name}</span>
             </p>
           </div>
-          <SheetFooter>
+          <DialogFooter>
             <Button
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
@@ -278,9 +278,9 @@ export default function Page() {
             <Button variant="destructive" onClick={handleDelete}>
               Delete
             </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }
