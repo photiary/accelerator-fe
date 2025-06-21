@@ -157,6 +157,7 @@ export function NavTree() {
 
       await folderApi.updateFolder(currentFolder.id, {
         name: newFolderName,
+        parentId: currentFolder.parentId,
         description: newFolderDescription || currentFolder.description,
       });
 
