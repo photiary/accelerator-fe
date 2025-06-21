@@ -25,6 +25,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@workspace/ui/components/sidebar";
+import { NavTree } from "@/components/nav-tree";
 
 // This is sample data.
 const data = {
@@ -82,6 +83,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavProjects projects={data.projects} />
         <NavMain items={data.navMain} />
+        <NavTree />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
