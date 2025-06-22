@@ -270,7 +270,7 @@ export function NavTree() {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  router.push("/feature/info");
+                  router.push(`/feature/info?folderId=${folder.id}`);
                 }}
               >
                 <Plus className="mr-2 h-4 w-4 text-muted-foreground" />

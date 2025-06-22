@@ -48,6 +48,14 @@
   ```
   - 입력된 Sequence Diagram은 `mermaid`패키지를 사용하여 표시한다.
 
+### 신규 등록
+
+- URL 쿼리 파리미터에 folderId가 있으면 신규 등록으로서 모든 입력 필드를 초기화 한다.
+- 부모 folderId를 사용한다.
+  - URL 쿼리 파라미터로 전달된 folderId를 사용한다. (예: `/feature/info?folderId=123`)
+  - folderId가 있는 경우, `folderApi.addFeatureToFolder(folderId, data)` 메소드를 사용하여 폴더에 기능을 추가한다.
+  - folderId가 없는 경우, `featureApi.createFeature(data)` 메소드를 사용하여 기능을 생성한다.
+
 ### 삭제
 
 - 삭제 버튼

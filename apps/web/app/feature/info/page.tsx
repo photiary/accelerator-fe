@@ -45,6 +45,7 @@ import {
   templatePromptApi,
   TemplatePromptResponseDto,
 } from "../../template-prompt/templatePromptAPI";
+import { folderApi } from "../../folder/folderAPI";
 import ReactMarkdown from "react-markdown";
 import Mermaid from "mermaid";
 
@@ -73,6 +74,7 @@ export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const folderId = searchParams.get("folderId");
   const isNewFeature = !id;
 
   const [feature, setFeature] = useState<FeatureResponseDto | null>(null);
@@ -143,6 +145,16 @@ export default function Page() {
   useEffect(() => {
     const fetchFeature = async () => {
       if (isNewFeature) {
+        // Initialize all input fields for new feature
+        setName("");
+        setDescription("");
+        setTemplatePromptId(undefined);
+        setSqlQueryName("");
+        setSqlQueryContent("");
+        setSequenceDiagramName("");
+        setSequenceDiagramContent("");
+        setSelectedTemplatePrompt(null);
+        setFeature(null);
         setLoading(false);
         return;
       }
@@ -208,7 +220,14 @@ export default function Page() {
     setSaving(true);
     try {
       if (isNewFeature) {
-        const newFeature = await featureApi.createFeature(data);
+        let newFeature;
+        if (folderId) {
+          // If folderId is present, add feature to the folder
+          newFeature = await folderApi.addFeatureToFolder(Number(folderId), data);
+        } else {
+          // Otherwise create a standalone feature
+          newFeature = await featureApi.createFeature(data);
+        }
         router.push(`/feature/info?id=${newFeature.id}`);
       } else {
         await featureApi.updateFeature(Number(id), data);
