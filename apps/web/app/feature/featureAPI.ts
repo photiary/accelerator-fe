@@ -21,10 +21,13 @@ export interface FeatureResponseDto {
   folderName?: string;
   templatePromptId?: number;
   templatePromptName?: string;
+  templatePromptContent?: string;
   sequenceDiagramId?: number;
   sequenceDiagramName?: string;
+  sequenceDiagramContent?: string;
   sqlQueryId?: number;
   sqlQueryName?: string;
+  sqlQueryContent?: string;
   createdAt: string;
   createdId: string;
   updatedAt: string;

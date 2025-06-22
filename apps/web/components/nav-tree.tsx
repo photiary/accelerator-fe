@@ -261,16 +261,24 @@ export function NavTree() {
             >
               <DropdownMenuItem onClick={() => openCreateDialog(folder)}>
                 <Plus className="mr-2 h-4 w-4 text-muted-foreground" />
-                <span>신규</span>
+                <span>신규 폴더</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => openRenameDialog(folder)}>
                 <Edit className="mr-2 h-4 w-4 text-muted-foreground" />
-                <span>이름 수정</span>
+                <span>폴더 수정</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  router.push("/feature/info");
+                }}
+              >
+                <Plus className="mr-2 h-4 w-4 text-muted-foreground" />
+                <span>신규 기능</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => openDeleteDialog(folder)}>
                 <Trash className="mr-2 h-4 w-4 text-destructive" />
-                <span className="text-destructive">삭제</span>
+                <span className="text-destructive">폴더 삭제</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
