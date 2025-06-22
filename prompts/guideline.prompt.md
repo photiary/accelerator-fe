@@ -57,6 +57,7 @@ The flow of control should always follow the pattern:
 ## Common Rules
 
 - All props, params, and strings can contain **KOREAN**.
+- Always use UI Component (**shadcn/ui**) in `./packages/ui/src/components`
 
 ## Final task plan
 
