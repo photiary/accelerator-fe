@@ -8,6 +8,7 @@ import {
   Plus,
   Trash,
   Edit,
+  Code,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -239,7 +240,7 @@ export function NavTree() {
             <SidebarMenuButton tooltip={folder.name}>
               <Folder />
               <span>{folder.name}</span>
-              {folder.children && (
+              {(folder.children || folder.features?.length > 0) && (
                 <ChevronRight
                   className={`ml-auto transition-transform duration-200 ${openFolders[folder.id] ? "rotate-90" : ""}`}
                 />
@@ -283,10 +284,21 @@ export function NavTree() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {folder.children && (
+          {(folder.children || folder.features?.length > 0) && (
             <CollapsibleContent>
               <SidebarMenuSub>
-                {renderFolderTree(folder.children)}
+                {folder.children && renderFolderTree(folder.children)}
+                {folder.features?.map((feature) => (
+                  <SidebarMenuItem key={`feature-${feature.id}`}>
+                    <SidebarMenuButton
+                      tooltip={feature.name}
+                      onClick={() => router.push(`/feature/info?id=${feature.id}`)}
+                    >
+                      <Code className="h-4 w-4" />
+                      <span>{feature.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenuSub>
             </CollapsibleContent>
           )}
