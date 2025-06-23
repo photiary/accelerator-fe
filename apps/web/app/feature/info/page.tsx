@@ -48,6 +48,7 @@ import {
 import { folderApi } from "../../folder/folderAPI";
 import ReactMarkdown from "react-markdown";
 import Mermaid from "mermaid";
+import { ClipboardCopy } from "lucide-react";
 
 // Custom hook for debounced function
 const useDebounce = <T extends (...args: any[]) => any>(
@@ -93,6 +94,7 @@ export default function Page() {
   const [sequenceDiagramName, setSequenceDiagramName] = useState("");
   const [sequenceDiagramContent, setSequenceDiagramContent] = useState("");
   const [mermaidSvg, setMermaidSvg] = useState("");
+  const [outputPrompt, setOutputPrompt] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -126,6 +128,30 @@ export default function Page() {
 
     renderMermaid();
   }, [sequenceDiagramContent]);
+
+  // Generate OUTPUT Prompt by replacing placeholders in template prompt content
+  useEffect(() => {
+    if (!selectedTemplatePrompt?.promptContent) {
+      setOutputPrompt("");
+      return;
+    }
+
+    let processedContent = selectedTemplatePrompt.promptContent;
+
+    // Replace $SQL_QUERY$ with sqlQueryContent
+    processedContent = processedContent.replace(
+      /\$SQL_QUERY\$/g,
+      sqlQueryContent || "",
+    );
+
+    // Replace $SEQUENCE_DIAGRAM$ with sequenceDiagramContent
+    processedContent = processedContent.replace(
+      /\$SEQUENCE_DIAGRAM\$/g,
+      sequenceDiagramContent || "",
+    );
+
+    setOutputPrompt(processedContent);
+  }, [selectedTemplatePrompt, sqlQueryContent, sequenceDiagramContent]);
 
   // Fetch template prompts
   useEffect(() => {
@@ -302,6 +328,21 @@ export default function Page() {
   const handleSequenceDiagramContentChange = (value: string | undefined) => {
     setSequenceDiagramContent(value || "");
     handleSaveDebounced();
+  };
+
+  // Handle copying outputPrompt to clipboard
+  const handleCopyOutputPrompt = () => {
+    if (outputPrompt) {
+      navigator.clipboard
+        .writeText(outputPrompt)
+        .then(() => {
+          // Could add a toast notification here if desired
+          console.log("Copied to clipboard");
+        })
+        .catch((err) => {
+          console.error("Failed to copy text: ", err);
+        });
+    }
   };
 
   // Keep the blur handlers as fallbacks
@@ -535,6 +576,32 @@ export default function Page() {
                     </div>
                   )}
                 </div>
+
+                {/* OUTPUT Prompt Section */}
+                {outputPrompt && (
+                  <div className="flex flex-col gap-6 mt-6">
+                    <h2 className="text-xl font-semibold">OUTPUT Prompt</h2>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex justify-between items-center">
+                        <label className="text-sm font-medium">
+                          Output Prompt Content
+                        </label>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={handleCopyOutputPrompt}
+                          className="flex items-center gap-1"
+                        >
+                          <ClipboardCopy className="h-4 w-4" />
+                          <span>Copy</span>
+                        </Button>
+                      </div>
+                      <article className="border rounded-md p-4 bg-white prose prose-slate lg:prose-lg">
+                        <ReactMarkdown>{outputPrompt}</ReactMarkdown>
+                      </article>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex justify-between mt-8">
                   <Button
