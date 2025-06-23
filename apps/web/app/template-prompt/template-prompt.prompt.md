@@ -3,7 +3,7 @@
 # Basic feature
 
 - domain: templatePrompt
-- `./templatePromptAPI.`를 이용한다.
+- `./templatePromptAPI.ts`를 이용한다.
 - Code editor는 `@monaco-editor/react`를 이용한다.
 - `$feature$` 문자열은 지시 사양에 맞게 수정한다.
 
