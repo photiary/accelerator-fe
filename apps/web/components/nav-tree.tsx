@@ -292,7 +292,9 @@ export function NavTree() {
                   <SidebarMenuItem key={`feature-${feature.id}`}>
                     <SidebarMenuButton
                       tooltip={feature.name}
-                      onClick={() => router.push(`/feature/info?id=${feature.id}`)}
+                      onClick={() =>
+                        router.push(`/feature/info?id=${feature.id}`)
+                      }
                     >
                       <Code className="h-4 w-4" />
                       <span>{feature.name}</span>

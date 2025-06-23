@@ -223,7 +223,10 @@ export default function Page() {
         let newFeature;
         if (folderId) {
           // If folderId is present, add feature to the folder
-          newFeature = await folderApi.addFeatureToFolder(Number(folderId), data);
+          newFeature = await folderApi.addFeatureToFolder(
+            Number(folderId),
+            data,
+          );
         } else {
           // Otherwise create a standalone feature
           newFeature = await featureApi.createFeature(data);
@@ -417,11 +420,11 @@ export default function Page() {
                       <label className="text-sm font-medium">
                         Template Prompt Content
                       </label>
-                      <div className="border rounded-md p-4 bg-white">
+                      <article className="border rounded-md p-4 bg-white prose prose-slate lg:prose-lg">
                         <ReactMarkdown>
                           {selectedTemplatePrompt.promptContent}
                         </ReactMarkdown>
-                      </div>
+                      </article>
                     </div>
                   )}
                 </div>
