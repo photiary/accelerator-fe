@@ -219,6 +219,23 @@ export function NavTree() {
     setIsDeleteDialogOpen(true);
   };
 
+  // Handle folder click
+  const handleFolderClick = (
+    folder: FolderTreeItem,
+    event: React.MouseEvent,
+  ) => {
+    // Prevent the event from triggering the CollapsibleTrigger
+    event.stopPropagation();
+    // Navigate to folder list page
+    router.push(`/folder/list?id=${folder.id}`);
+
+    // Also toggle the folder open state to show it's selected
+    setOpenFolders((prev) => ({
+      ...prev,
+      [folder.id]: !prev[folder.id],
+    }));
+  };
+
   // Render folder tree recursively
   const renderFolderTree = (items: FolderTreeItem[]) => {
     return items.map((folder) => (
@@ -237,7 +254,10 @@ export function NavTree() {
       >
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={folder.name}>
+            <SidebarMenuButton
+              tooltip={folder.name}
+              onClick={(e) => handleFolderClick(folder, e)}
+            >
               <Folder />
               <span>{folder.name}</span>
               {(folder.children || folder.features?.length > 0) && (
