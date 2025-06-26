@@ -1,6 +1,5 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,11 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@workspace/ui/components/select";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@workspace/ui/components/sidebar";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar";
 import Editor from "@monaco-editor/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -359,276 +354,273 @@ export default function Page() {
   };
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/feature/list">Feature</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>
-                    {isNewFeature ? "New Feature" : "Feature Info"}
-                  </BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl p-6 md:min-h-min">
-            {loading ? (
-              <div className="flex items-center justify-center h-40">
-                <p>Loading...</p>
-              </div>
-            ) : (
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <div className="flex items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/feature/list">Feature</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>
+                  {isNewFeature ? "New Feature" : "Feature Info"}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </header>
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl p-6 md:min-h-min">
+          {loading ? (
+            <div className="flex items-center justify-center h-40">
+              <p>Loading...</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-6">
+              {/* Feature Section */}
               <div className="flex flex-col gap-6">
-                {/* Feature Section */}
-                <div className="flex flex-col gap-6">
-                  <h2 className="text-xl font-semibold">Feature</h2>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="name" className="text-sm font-medium">
-                      Name
-                    </label>
-                    <Input
-                      id="name"
-                      value={name}
-                      onChange={handleNameChange}
-                      onBlur={handleNameBlur}
-                      placeholder="Enter feature name"
-                      className="max-w-md"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="description"
-                      className="text-sm font-medium"
-                    >
-                      Description
-                    </label>
-                    <Textarea
-                      id="description"
-                      value={description}
-                      onChange={handleDescriptionChange}
-                      onBlur={handleDescriptionBlur}
-                      placeholder="Enter feature description"
-                      className="max-w-md"
-                      rows={4}
-                    />
-                  </div>
+                <h2 className="text-xl font-semibold">Feature</h2>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="name" className="text-sm font-medium">
+                    Name
+                  </label>
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={handleNameChange}
+                    onBlur={handleNameBlur}
+                    placeholder="Enter feature name"
+                    className="max-w-md"
+                  />
                 </div>
-
-                {/* Template Prompt Section */}
-                <div className="flex flex-col gap-6 mt-6">
-                  <h2 className="text-xl font-semibold">Template Prompt</h2>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="templatePrompt"
-                      className="text-sm font-medium"
-                    >
-                      Template Prompt
-                    </label>
-                    <Select
-                      value={templatePromptId?.toString()}
-                      onValueChange={handleTemplatePromptChange}
-                    >
-                      <SelectTrigger className="max-w-md">
-                        <SelectValue placeholder="Select a template prompt" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {templatePrompts.map((prompt) => (
-                          <SelectItem
-                            key={prompt.id}
-                            value={prompt.id.toString()}
-                          >
-                            {prompt.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {selectedTemplatePrompt && (
-                    <div className="flex flex-col gap-2 mt-2">
-                      <label className="text-sm font-medium">
-                        Template Prompt Content
-                      </label>
-                      <article className="border rounded-md p-4 bg-white prose prose-slate lg:prose-lg">
-                        <ReactMarkdown>
-                          {selectedTemplatePrompt.promptContent}
-                        </ReactMarkdown>
-                      </article>
-                    </div>
-                  )}
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="description"
+                    className="text-sm font-medium"
+                  >
+                    Description
+                  </label>
+                  <Textarea
+                    id="description"
+                    value={description}
+                    onChange={handleDescriptionChange}
+                    onBlur={handleDescriptionBlur}
+                    placeholder="Enter feature description"
+                    className="max-w-md"
+                    rows={4}
+                  />
                 </div>
+              </div>
 
-                {/* SQL Query Section */}
-                <div className="flex flex-col gap-6 mt-6">
-                  <h2 className="text-xl font-semibold">SQL Query</h2>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="sqlQueryName"
-                      className="text-sm font-medium"
-                    >
-                      SQL Query Name
-                    </label>
-                    <Input
-                      id="sqlQueryName"
-                      value={sqlQueryName}
-                      onChange={handleSqlQueryNameChange}
-                      placeholder="Enter SQL query name"
-                      className="max-w-md"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="sqlQueryContent"
-                      className="text-sm font-medium"
-                    >
-                      SQL Query Content
-                    </label>
-                    <div className="h-[300px] border rounded-md overflow-hidden">
-                      <Editor
-                        height="100%"
-                        language="sql"
-                        value={sqlQueryContent}
-                        onChange={handleSqlQueryContentChange}
-                        options={{
-                          minimap: { enabled: false },
-                          scrollBeyondLastLine: false,
-                          wordWrap: "on",
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sequence Diagram Section */}
-                <div className="flex flex-col gap-6 mt-6">
-                  <h2 className="text-xl font-semibold">Sequence Diagram</h2>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="sequenceDiagramName"
-                      className="text-sm font-medium"
-                    >
-                      Sequence Diagram Name
-                    </label>
-                    <Input
-                      id="sequenceDiagramName"
-                      value={sequenceDiagramName}
-                      onChange={handleSequenceDiagramNameChange}
-                      placeholder="Enter sequence diagram name"
-                      className="max-w-md"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="sequenceDiagramContent"
-                      className="text-sm font-medium"
-                    >
-                      Sequence Diagram Content
-                    </label>
-                    <div className="h-[300px] border rounded-md overflow-hidden">
-                      <Editor
-                        height="100%"
-                        language="json"
-                        value={sequenceDiagramContent}
-                        onChange={handleSequenceDiagramContentChange}
-                        options={{
-                          minimap: { enabled: false },
-                          scrollBeyondLastLine: false,
-                          wordWrap: "on",
-                        }}
-                        beforeMount={(monaco) => {
-                          monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
-                            {
-                              validate: true,
-                              enableSchemaRequest: true,
-                              schemas: [
-                                {
-                                  fileMatch: ["config.json"],
-                                  uri: "https://mermaid.js.org/schemas/config.schema.json",
-                                },
-                              ],
-                            },
-                          );
-                        }}
-                      />
-                    </div>
-                  </div>
-                  {mermaidSvg && (
-                    <div className="flex flex-col gap-2 mt-2">
-                      <label className="text-sm font-medium">
-                        Sequence Diagram Preview
-                      </label>
-                      <div
-                        className="border rounded-md p-4 bg-white"
-                        dangerouslySetInnerHTML={{ __html: mermaidSvg }}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* OUTPUT Prompt Section */}
-                {outputPrompt && (
-                  <div className="flex flex-col gap-6 mt-6">
-                    <h2 className="text-xl font-semibold">OUTPUT Prompt</h2>
-                    <div className="flex flex-col gap-2">
-                      <div className="flex justify-between items-center">
-                        <label className="text-sm font-medium">
-                          Output Prompt Content
-                        </label>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={handleCopyOutputPrompt}
-                          className="flex items-center gap-1"
+              {/* Template Prompt Section */}
+              <div className="flex flex-col gap-6 mt-6">
+                <h2 className="text-xl font-semibold">Template Prompt</h2>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="templatePrompt"
+                    className="text-sm font-medium"
+                  >
+                    Template Prompt
+                  </label>
+                  <Select
+                    value={templatePromptId?.toString()}
+                    onValueChange={handleTemplatePromptChange}
+                  >
+                    <SelectTrigger className="max-w-md">
+                      <SelectValue placeholder="Select a template prompt" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templatePrompts.map((prompt) => (
+                        <SelectItem
+                          key={prompt.id}
+                          value={prompt.id.toString()}
                         >
-                          <ClipboardCopy className="h-4 w-4" />
-                          <span>Copy</span>
-                        </Button>
-                      </div>
-                      <article className="border rounded-md p-4 bg-white prose prose-slate lg:prose-lg">
-                        <ReactMarkdown>{outputPrompt}</ReactMarkdown>
-                      </article>
-                    </div>
+                          {prompt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {selectedTemplatePrompt && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    <label className="text-sm font-medium">
+                      Template Prompt Content
+                    </label>
+                    <article className="border rounded-md p-4 bg-white prose prose-slate lg:prose-lg">
+                      <ReactMarkdown>
+                        {selectedTemplatePrompt.promptContent}
+                      </ReactMarkdown>
+                    </article>
                   </div>
                 )}
+              </div>
 
-                <div className="flex justify-between mt-8">
-                  <Button
-                    variant="outline"
-                    onClick={() => router.push("/feature/list")}
+              {/* SQL Query Section */}
+              <div className="flex flex-col gap-6 mt-6">
+                <h2 className="text-xl font-semibold">SQL Query</h2>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="sqlQueryName"
+                    className="text-sm font-medium"
                   >
-                    Back to List
-                  </Button>
-                  <div className="flex gap-2">
-                    {!isNewFeature && (
-                      <Button
-                        variant="destructive"
-                        onClick={() => setShowDeleteDialog(true)}
-                      >
-                        Delete
-                      </Button>
-                    )}
-                    <Button onClick={handleSave} disabled={saving}>
-                      {saving ? "Saving..." : isNewFeature ? "Create" : "Save"}
-                    </Button>
+                    SQL Query Name
+                  </label>
+                  <Input
+                    id="sqlQueryName"
+                    value={sqlQueryName}
+                    onChange={handleSqlQueryNameChange}
+                    placeholder="Enter SQL query name"
+                    className="max-w-md"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="sqlQueryContent"
+                    className="text-sm font-medium"
+                  >
+                    SQL Query Content
+                  </label>
+                  <div className="h-[300px] border rounded-md overflow-hidden">
+                    <Editor
+                      height="100%"
+                      language="sql"
+                      value={sqlQueryContent}
+                      onChange={handleSqlQueryContentChange}
+                      options={{
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        wordWrap: "on",
+                      }}
+                    />
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+
+              {/* Sequence Diagram Section */}
+              <div className="flex flex-col gap-6 mt-6">
+                <h2 className="text-xl font-semibold">Sequence Diagram</h2>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="sequenceDiagramName"
+                    className="text-sm font-medium"
+                  >
+                    Sequence Diagram Name
+                  </label>
+                  <Input
+                    id="sequenceDiagramName"
+                    value={sequenceDiagramName}
+                    onChange={handleSequenceDiagramNameChange}
+                    placeholder="Enter sequence diagram name"
+                    className="max-w-md"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="sequenceDiagramContent"
+                    className="text-sm font-medium"
+                  >
+                    Sequence Diagram Content
+                  </label>
+                  <div className="h-[300px] border rounded-md overflow-hidden">
+                    <Editor
+                      height="100%"
+                      language="json"
+                      value={sequenceDiagramContent}
+                      onChange={handleSequenceDiagramContentChange}
+                      options={{
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        wordWrap: "on",
+                      }}
+                      beforeMount={(monaco) => {
+                        monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
+                          {
+                            validate: true,
+                            enableSchemaRequest: true,
+                            schemas: [
+                              {
+                                fileMatch: ["config.json"],
+                                uri: "https://mermaid.js.org/schemas/config.schema.json",
+                              },
+                            ],
+                          },
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+                {mermaidSvg && (
+                  <div className="flex flex-col gap-2 mt-2">
+                    <label className="text-sm font-medium">
+                      Sequence Diagram Preview
+                    </label>
+                    <div
+                      className="border rounded-md p-4 bg-white"
+                      dangerouslySetInnerHTML={{ __html: mermaidSvg }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* OUTPUT Prompt Section */}
+              {outputPrompt && (
+                <div className="flex flex-col gap-6 mt-6">
+                  <h2 className="text-xl font-semibold">OUTPUT Prompt</h2>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center">
+                      <label className="text-sm font-medium">
+                        Output Prompt Content
+                      </label>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCopyOutputPrompt}
+                        className="flex items-center gap-1"
+                      >
+                        <ClipboardCopy className="h-4 w-4" />
+                        <span>Copy</span>
+                      </Button>
+                    </div>
+                    <article className="border rounded-md p-4 bg-white prose prose-slate lg:prose-lg">
+                      <ReactMarkdown>{outputPrompt}</ReactMarkdown>
+                    </article>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-between mt-8">
+                <Button
+                  variant="outline"
+                  onClick={() => router.push("/feature/list")}
+                >
+                  Back to List
+                </Button>
+                <div className="flex gap-2">
+                  {!isNewFeature && (
+                    <Button
+                      variant="destructive"
+                      onClick={() => setShowDeleteDialog(true)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                  <Button onClick={handleSave} disabled={saving}>
+                    {saving ? "Saving..." : isNewFeature ? "Create" : "Save"}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </SidebarInset>
+      </div>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
@@ -659,6 +651,6 @@ export default function Page() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </SidebarProvider>
+    </>
   );
 }

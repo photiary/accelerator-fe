@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,11 +11,7 @@ import {
   BreadcrumbSeparator,
 } from "@workspace/ui/components/breadcrumb";
 import { Separator } from "@workspace/ui/components/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@workspace/ui/components/sidebar";
+import { SidebarTrigger } from "@workspace/ui/components/sidebar";
 import {
   Table,
   TableBody,
@@ -140,134 +135,131 @@ export default function Page() {
   };
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/folder/list">Folder</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                {breadcrumbs.map((item, index) => (
-                  <React.Fragment key={item.id}>
-                    {index > 0 && (
-                      <BreadcrumbSeparator className="hidden md:block" />
-                    )}
-                    <BreadcrumbItem>
-                      {index === breadcrumbs.length - 1 ? (
-                        <BreadcrumbPage>{item.name}</BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink href={`/folder/list?id=${item.id}`}>
-                          {item.name}
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                  </React.Fragment>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-          <div className="ml-auto mr-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCreateFolder}
-              className="flex items-center gap-1"
-            >
-              <Plus className="h-4 w-4" />
-              <span>New Feature</span>
-            </Button>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl p-4 md:min-h-min">
-            {loading ? (
-              <div className="flex items-center justify-center h-40">
-                <p>Loading...</p>
-              </div>
-            ) : (
-              <>
-                {folderId && (
-                  <div className="mb-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleBackClick}
-                      className="flex items-center gap-1"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                      <span>Back</span>
-                    </Button>
-                  </div>
-                )}
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-12"></TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Description
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {!currentFolder ||
-                    (currentFolder.childFolders.length === 0 &&
-                      currentFolder.features.length === 0) ? (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center">
-                          No items found
-                        </TableCell>
-                      </TableRow>
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <div className="flex items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/folder/list">Folder</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              {breadcrumbs.map((item, index) => (
+                <React.Fragment key={item.id}>
+                  {index > 0 && (
+                    <BreadcrumbSeparator className="hidden md:block" />
+                  )}
+                  <BreadcrumbItem>
+                    {index === breadcrumbs.length - 1 ? (
+                      <BreadcrumbPage>{item.name}</BreadcrumbPage>
                     ) : (
-                      <>
-                        {currentFolder.childFolders.map((folder) => (
-                          <TableRow
-                            key={`folder-${folder.id}`}
-                            onClick={() => handleFolderClick(folder)}
-                            className="cursor-pointer hover:bg-muted"
-                          >
-                            <TableCell>
-                              <Folder className="h-5 w-5 text-muted-foreground" />
-                            </TableCell>
-                            <TableCell>{folder.name}</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              Folder
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                        {currentFolder.features.map((feature) => (
-                          <TableRow
-                            key={`feature-${feature.id}`}
-                            onClick={() => handleFeatureClick(feature)}
-                            className="cursor-pointer hover:bg-muted"
-                          >
-                            <TableCell>
-                              <Code className="h-5 w-5 text-muted-foreground" />
-                            </TableCell>
-                            <TableCell>{feature.name}</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                              Feature
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </>
+                      <BreadcrumbLink href={`/folder/list?id=${item.id}`}>
+                        {item.name}
+                      </BreadcrumbLink>
                     )}
-                  </TableBody>
-                </Table>
-              </>
-            )}
-          </div>
+                  </BreadcrumbItem>
+                </React.Fragment>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+        <div className="ml-auto mr-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleCreateFolder}
+            className="flex items-center gap-1"
+          >
+            <Plus className="h-4 w-4" />
+            <span>New Feature</span>
+          </Button>
+        </div>
+      </header>
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl p-4 md:min-h-min">
+          {loading ? (
+            <div className="flex items-center justify-center h-40">
+              <p>Loading...</p>
+            </div>
+          ) : (
+            <>
+              {folderId && (
+                <div className="mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleBackClick}
+                    className="flex items-center gap-1"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    <span>Back</span>
+                  </Button>
+                </div>
+              )}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12"></TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Description
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {!currentFolder ||
+                  (currentFolder.childFolders.length === 0 &&
+                    currentFolder.features.length === 0) ? (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center">
+                        No items found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    <>
+                      {currentFolder.childFolders.map((folder) => (
+                        <TableRow
+                          key={`folder-${folder.id}`}
+                          onClick={() => handleFolderClick(folder)}
+                          className="cursor-pointer hover:bg-muted"
+                        >
+                          <TableCell>
+                            <Folder className="h-5 w-5 text-muted-foreground" />
+                          </TableCell>
+                          <TableCell>{folder.name}</TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            Folder
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                      {currentFolder.features.map((feature) => (
+                        <TableRow
+                          key={`feature-${feature.id}`}
+                          onClick={() => handleFeatureClick(feature)}
+                          className="cursor-pointer hover:bg-muted"
+                        >
+                          <TableCell>
+                            <Code className="h-5 w-5 text-muted-foreground" />
+                          </TableCell>
+                          <TableCell>{feature.name}</TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            Feature
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  )}
+                </TableBody>
+              </Table>
+            </>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
