@@ -7,6 +7,8 @@
 
 ### Service Component Layer
 
+### Layout Component Layer
+
 ### Page Component Layer
 
 - Component의 기본 구조는 `./template.prompt.md`의 `page.tsx`를 따른다.
