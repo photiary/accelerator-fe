@@ -67,9 +67,13 @@ export function NavTree() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [currentFolder, setCurrentFolder] = useState<FolderTreeItem | null>(
     null,
   );
+  const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderDescription, setNewFolderDescription] = useState("");
   const [openFolders, setOpenFolders] = useState<OpenFolderState>({});
@@ -80,7 +84,22 @@ export function NavTree() {
   // Fetch root folders on component mount
   useEffect(() => {
     fetchFolders();
+
+    // Restore selected folder ID from localStorage if available
+    const savedFolderId = localStorage.getItem("selectedFolderId");
+    if (savedFolderId) {
+      setSelectedFolderId(Number(savedFolderId));
+    }
   }, []);
+
+  // Save selected folder ID to localStorage when it changes
+  useEffect(() => {
+    if (selectedFolderId) {
+      localStorage.setItem("selectedFolderId", selectedFolderId.toString());
+    } else {
+      localStorage.removeItem("selectedFolderId");
+    }
+  }, [selectedFolderId]);
 
   // Fetch all folders and build tree structure
   const fetchFolders = async () => {
@@ -97,20 +116,31 @@ export function NavTree() {
     }
   };
 
-  // Recursively build folder tree
+  // Recursively build folder tree with optimized fetching
   const buildFolderTree = async (
     folders: FolderResponseDto[],
+    depth: number = 0,
+    maxDepth: number = 2
   ): Promise<FolderTreeItem[]> => {
     const result: FolderTreeItem[] = [];
 
     for (const folder of folders) {
-      const childFolders = await folderApi.findChildFolders(folder.id);
-      const children = await buildFolderTree(childFolders);
+      // Only fetch children if we're within the max depth
+      let children: FolderTreeItem[] = [];
+      if (depth < maxDepth) {
+        try {
+          const childFolders = await folderApi.findChildFolders(folder.id);
+          children = await buildFolderTree(childFolders, depth + 1, maxDepth);
+        } catch (error) {
+          console.error(`Error fetching children for folder ${folder.id}:`, error);
+          // Continue with empty children rather than failing the whole tree
+        }
+      }
 
       result.push({
         ...folder,
         children: children.length > 0 ? children : undefined,
-        isOpen: false,
+        isOpen: openFolders[folder.id] || false,
       });
     }
 
@@ -121,18 +151,19 @@ export function NavTree() {
   const handleCreateFolder = async () => {
     try {
       if (!newFolderName.trim()) {
-        toast.error("Folder name cannot be empty");
+        toast.error("폴더 이름은 비워둘 수 없습니다");
         return;
       }
 
+      setIsCreating(true);
       const parentId = currentFolder?.id;
-      await folderApi.createFolder({
+      const newFolder = await folderApi.createFolder({
         name: newFolderName,
         description: newFolderDescription,
         parentId,
       });
 
-      toast.success("Folder created successfully");
+      toast.success("폴더가 생성되었습니다");
 
       // Reset form and close dialog
       setNewFolderName("");
@@ -141,9 +172,19 @@ export function NavTree() {
 
       // Refresh folders
       await fetchFolders();
+
+      // Auto-open the parent folder if it exists
+      if (parentId) {
+        setOpenFolders(prev => ({
+          ...prev,
+          [parentId]: true
+        }));
+      }
     } catch (error) {
       console.error("Error creating folder:", error);
-      toast.error("Failed to create folder");
+      toast.error("폴더 생성에 실패했습니다");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -152,17 +193,18 @@ export function NavTree() {
     try {
       if (!currentFolder) return;
       if (!newFolderName.trim()) {
-        toast.error("Folder name cannot be empty");
+        toast.error("폴더 이름은 비워둘 수 없습니다");
         return;
       }
 
+      setIsRenaming(true);
       await folderApi.updateFolder(currentFolder.id, {
         name: newFolderName,
         parentId: currentFolder.parentId,
         description: newFolderDescription || currentFolder.description,
       });
 
-      toast.success("Folder renamed successfully");
+      toast.success("폴더 이름이 변경되었습니다");
 
       // Reset form and close dialog
       setNewFolderName("");
@@ -171,9 +213,19 @@ export function NavTree() {
 
       // Refresh folders
       await fetchFolders();
+
+      // Keep the folder open if it was open before
+      if (openFolders[currentFolder.id]) {
+        setOpenFolders(prev => ({
+          ...prev,
+          [currentFolder.id]: true
+        }));
+      }
     } catch (error) {
       console.error("Error renaming folder:", error);
-      toast.error("Failed to rename folder");
+      toast.error("폴더 이름 변경에 실패했습니다");
+    } finally {
+      setIsRenaming(false);
     }
   };
 
@@ -182,18 +234,35 @@ export function NavTree() {
     try {
       if (!currentFolder) return;
 
+      setIsDeleting(true);
       await folderApi.deleteFolder(currentFolder.id);
 
-      toast.success("Folder deleted successfully");
+      toast.success("폴더가 삭제되었습니다");
 
       // Close dialog
       setIsDeleteDialogOpen(false);
+
+      // Remove from openFolders state
+      if (openFolders[currentFolder.id]) {
+        setOpenFolders(prev => {
+          const newState = { ...prev };
+          delete newState[currentFolder.id];
+          return newState;
+        });
+      }
+
+      // If this was the selected folder, clear selection
+      if (selectedFolderId === currentFolder.id) {
+        setSelectedFolderId(null);
+      }
 
       // Refresh folders
       await fetchFolders();
     } catch (error) {
       console.error("Error deleting folder:", error);
-      toast.error("Failed to delete folder");
+      toast.error("폴더 삭제에 실패했습니다");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -226,10 +295,14 @@ export function NavTree() {
   ) => {
     // Prevent the event from triggering the CollapsibleTrigger
     event.stopPropagation();
+
+    // Set this folder as selected
+    setSelectedFolderId(folder.id);
+
     // Navigate to folder list page
     router.push(`/folder/list?id=${folder.id}`);
 
-    // Also toggle the folder open state to show it's selected
+    // Also toggle the folder open state
     setOpenFolders((prev) => ({
       ...prev,
       [folder.id]: !prev[folder.id],
@@ -257,12 +330,16 @@ export function NavTree() {
             <SidebarMenuButton
               tooltip={folder.name}
               onClick={(e) => handleFolderClick(folder, e)}
+              isActive={selectedFolderId === folder.id}
+              className={selectedFolderId === folder.id ? "bg-accent" : ""}
             >
-              <Folder />
+              <Folder className={selectedFolderId === folder.id ? "text-accent-foreground" : ""} />
               <span>{folder.name}</span>
               {(folder.children || folder.features?.length > 0) && (
                 <ChevronRight
-                  className={`ml-auto transition-transform duration-200 ${openFolders[folder.id] ? "rotate-90" : ""}`}
+                  className={`ml-auto transition-transform duration-200 ${
+                    openFolders[folder.id] ? "rotate-90" : ""
+                  } ${selectedFolderId === folder.id ? "text-accent-foreground" : ""}`}
                 />
               )}
             </SidebarMenuButton>
@@ -312,9 +389,11 @@ export function NavTree() {
                   <SidebarMenuItem key={`feature-${feature.id}`}>
                     <SidebarMenuButton
                       tooltip={feature.name}
-                      onClick={() =>
-                        router.push(`/feature/info?id=${feature.id}`)
-                      }
+                      onClick={() => {
+                        // Clear folder selection when a feature is clicked
+                        setSelectedFolderId(null);
+                        router.push(`/feature/info?id=${feature.id}`);
+                      }}
                     >
                       <Code className="h-4 w-4" />
                       <span>{feature.name}</span>
@@ -399,10 +478,16 @@ export function NavTree() {
             <Button
               variant="outline"
               onClick={() => setIsCreateDialogOpen(false)}
+              disabled={isCreating}
             >
               취소
             </Button>
-            <Button onClick={handleCreateFolder}>생성</Button>
+            <Button 
+              onClick={handleCreateFolder} 
+              disabled={isCreating}
+            >
+              {isCreating ? "생성 중..." : "생성"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -448,10 +533,16 @@ export function NavTree() {
             <Button
               variant="outline"
               onClick={() => setIsRenameDialogOpen(false)}
+              disabled={isRenaming}
             >
               취소
             </Button>
-            <Button onClick={handleRenameFolder}>저장</Button>
+            <Button 
+              onClick={handleRenameFolder}
+              disabled={isRenaming}
+            >
+              {isRenaming ? "저장 중..." : "저장"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -470,11 +561,16 @@ export function NavTree() {
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={isDeleting}
             >
               취소
             </Button>
-            <Button variant="destructive" onClick={handleDeleteFolder}>
-              삭제
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteFolder}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "삭제 중..." : "삭제"}
             </Button>
           </DialogFooter>
         </DialogContent>

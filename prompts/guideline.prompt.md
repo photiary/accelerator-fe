@@ -8,7 +8,7 @@ This document outlines the coding standards, architectural patterns, and best pr
 
 - **TypeScript** for language
 - **React v19** for building user interfaces
-- **Next v15**: The React Framework for the Web
+- **Next v15** is The React Framework for the Web
 - **Tailwindcss v4** for utility-first styling
 - **dayjs** for Date util
 - **shadcn/ui** is a set of beautifully-designed, accessible components and a code distribution platform.
@@ -23,36 +23,42 @@ Ignore the `*.prompt.md` resources defined in `./prompt.ignore`.
 
 ### Package Structure
 
-**Monorepo.**
+**Monorepo**
 
-```
-root/
-├─ apps/
-│  └─ web/
-│     ├─ app                   # Page components & Layout components
-│     │  └─ {domain}           # Feature domain (Feature Page, Feature API Call)
-│     ├─ components            # Business logic common components
-│     ├─ hooks
-│     └─ lib                   # Utils
-│         ├─ api.ts            # Axios
-│         └─ axiosInstances.ts
-└─ packages/
-   └─ ui/
-      └─ src/
-         └─ components/        # UI Common components (shadcn/ui) and None business components
-```
+    ```
+    root/
+    ├─ apps/
+    │  └─ web/
+    │     ├─ app                       # Page components & Layout components
+    │     │  └─ {domain}               # Feature domain (Feature Page, Feature API Call)
+    │     ├─ components                # Business logic common components
+    │     ├─ hooks
+    │     └─ lib                       # Utils
+    │         ├─ api.ts                # Axios
+    │         └─ axiosInstances.ts
+    └─ packages/
+       └─ ui/
+          └─ src/
+             └─ components/        # UI Common components (shadcn/ui) and None business components
+    ```
 
 ### Layered Architecture
 
 The application follows a strict layered architecture with a clear flow of control
 
 - **API call Layer**: Backend Http request API call, use the Axios defined in `../apps/web/lib/api.ts`
+- **Store Layer**: Manages the global application state using state management Redux
 - **UI Component Layer**: Contains the visual components presented to users, including buttons, forms, and layouts.
+  **DO NOT access Store Layer**
+- **Service Component Layer**: Acts as an intermediary between the store layer and the UI component layer, handling business logic, data transformation, validation.
+  **DO NOT access API Layer**
 
 The flow of control should always follow the pattern:
 
 1. This file: `./prompts/guideline.prompt.md`
 2. API call Layer: `./prompts/api.prompt.md`
+3. Store Layer (`src/prompts/store.prompt.md`)
+4. Component Layer (`src/prompts/component.prompt.md`)
 
 ## Common Rules
 
